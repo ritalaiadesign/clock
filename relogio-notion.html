@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <title>Relógio · ritalaia.design</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Instrument+Serif&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: transparent;
+      font-family: 'Inter', sans-serif;
+      color: #333;
+    }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .rl-clock {
+      width: 170px;
+      height: 170px;
+      border-radius: 22px;
+      background: #f6f5f3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 10px rgba(51, 51, 51, 0.06);
+    }
+    .rl-clock-svg {
+      width: 142px;
+      height: 142px;
+    }
+    .face {
+      fill: #ffffff;
+      stroke: #eeedeb;
+      stroke-width: 1;
+    }
+    .tick {
+      stroke: #bbb7ae;
+      stroke-width: 1.2;
+      stroke-linecap: round;
+    }
+    .tick.quarter {
+      stroke: #333333;
+      stroke-width: 2;
+    }
+    .hand {
+      stroke: #333333;
+      stroke-linecap: round;
+      transform-origin: 71px 71px;
+      transition: transform 0.2s cubic-bezier(0.4, 2.3, 0.6, 1);
+    }
+    .hand-hour { stroke-width: 4; }
+    .hand-min  { stroke-width: 3; }
+    .hand-sec {
+      stroke: #ca88fb;
+      stroke-width: 1.5;
+    }
+    .center-outer { fill: #ca88fb; }
+    .center-inner { fill: #ffffff; }
+  </style>
+</head>
+<body>
+  <div class="rl-clock">
+    <svg class="rl-clock-svg" viewBox="0 0 142 142">
+      <circle class="face" cx="71" cy="71" r="66"></circle>
+
+      <line class="tick quarter" x1="71" y1="9"  x2="71" y2="19"></line>
+      <line class="tick"         x1="102" y1="17.31" x2="99" y2="22.51"></line>
+      <line class="tick"         x1="124.69" y1="40" x2="119.49" y2="43"></line>
+      <line class="tick quarter" x1="133" y1="71" x2="123" y2="71"></line>
+      <line class="tick"         x1="124.69" y1="102" x2="119.49" y2="99"></line>
+      <line class="tick"         x1="102" y1="124.69" x2="99" y2="119.49"></line>
+      <line class="tick quarter" x1="71" y1="133" x2="71" y2="123"></line>
+      <line class="tick"         x1="40" y1="124.69" x2="43" y2="119.49"></line>
+      <line class="tick"         x1="17.31" y1="102" x2="22.51" y2="99"></line>
+      <line class="tick quarter" x1="9" y1="71" x2="19" y2="71"></line>
+      <line class="tick"         x1="17.31" y1="40" x2="22.51" y2="43"></line>
+      <line class="tick"         x1="40" y1="17.31" x2="43" y2="22.51"></line>
+
+      <line class="hand hand-hour" x1="71" y1="71" x2="71" y2="36"></line>
+      <line class="hand hand-min"  x1="71" y1="71" x2="71" y2="22"></line>
+      <line class="hand hand-sec"  x1="71" y1="76" x2="71" y2="18"></line>
+
+      <circle class="center-outer" cx="71" cy="71" r="4.5"></circle>
+      <circle class="center-inner" cx="71" cy="71" r="1.6"></circle>
+    </svg>
+  </div>
+
+  <script>
+    (function () {
+      var hourEl = document.querySelector('.hand-hour');
+      var minEl  = document.querySelector('.hand-min');
+      var secEl  = document.querySelector('.hand-sec');
+
+      function tick() {
+        var now = new Date();
+        var h = now.getHours();
+        var m = now.getMinutes();
+        var s = now.getSeconds() + now.getMilliseconds() / 1000;
+
+        var hourDeg = (h % 12) * 30 + m * 0.5;
+        var minDeg  = m * 6 + s * 0.1;
+        var secDeg  = s * 6;
+
+        hourEl.setAttribute('transform', 'rotate(' + hourDeg + ' 71 71)');
+        minEl.setAttribute('transform',  'rotate(' + minDeg  + ' 71 71)');
+        secEl.setAttribute('transform',  'rotate(' + secDeg  + ' 71 71)');
+      }
+
+      tick();
+      setInterval(tick, 1000);
+    })();
+  </script>
+</body>
+</html>
