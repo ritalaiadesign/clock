@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <title>Calendário · ritalaia.design</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      font-family: 'Inter', sans-serif;
+      color: #333;
+    }
+    body {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+    }
+    .rl-cal {
+      width: 240px;
+      border-radius: 26px;
+      background: #f6f5f3;
+      padding: 18px 20px 20px;
+      box-sizing: border-box;
+    }
+    .rl-cal-month {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      color: #ca88fb;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .rl-cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px 2px;
+      font-size: 13px;
+      font-weight: 500;
+      text-align: center;
+    }
+    .rl-cal-dow {
+      font-weight: 600;
+      color: #333;
+      padding-bottom: 4px;
+    }
+    .rl-cal-dow.weekend {
+      color: #bbb7ae;
+    }
+    .rl-cal-day {
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+      border-radius: 50%;
+    }
+    .rl-cal-day.weekend {
+      color: #bbb7ae;
+    }
+    .rl-cal-day.empty {
+      color: transparent;
+    }
+    .rl-cal-day.today {
+      background: #dffb76;
+      color: #333;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="rl-cal">
+    <div class="rl-cal-month" id="cal-month">—</div>
+    <div class="rl-cal-grid" id="cal-grid"></div>
+  </div>
+
+  <script>
+    (function () {
+      var monthNamesPT = [
+        'JANEIRO','FEVEREIRO','MARÇO','ABRIL','MAIO','JUNHO',
+        'JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO'
+      ];
+      // Monday-first week
+      var dayLabels = ['M','T','W','T','F','S','S'];
+
+      function render() {
+        var now = new Date();
+        var year = now.getFullYear();
+        var month = now.getMonth();
+        var todayDate = now.getDate();
+
+        document.getElementById('cal-month').textContent = monthNamesPT[month];
+
+        var grid = document.getElementById('cal-grid');
+        grid.innerHTML = '';
+
+        // day-of-week headers
+        for (var i = 0; i < 7; i++) {
+          var dow = document.createElement('div');
+          dow.className = 'rl-cal-dow' + (i >= 5 ? ' weekend' : '');
+          dow.textContent = dayLabels[i];
+          grid.appendChild(dow);
+        }
+
+        // first day of month (JS: 0=Sun..6=Sat → convert to Mon-first 0=Mon..6=Sun)
+        var firstDay = new Date(year, month, 1).getDay();
+        var offset = (firstDay + 6) % 7;
+
+        // empties before
+        for (var k = 0; k < offset; k++) {
+          var emp = document.createElement('div');
+          emp.className = 'rl-cal-day empty';
+          emp.textContent = '·';
+          grid.appendChild(emp);
+        }
+
+        // days in month
+        var daysInMonth = new Date(year, month + 1, 0).getDate();
+        for (var d = 1; d <= daysInMonth; d++) {
+          var cell = document.createElement('div');
+          var dowIndex = (offset + d - 1) % 7;
+          var classes = 'rl-cal-day';
+          if (dowIndex >= 5) classes += ' weekend';
+          if (d === todayDate) classes += ' today';
+          cell.className = classes;
+          cell.textContent = d;
+          grid.appendChild(cell);
+        }
+      }
+
+      render();
+      // re-render at midnight to update "today"
+      function scheduleMidnight() {
+        var now = new Date();
+        var next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 5);
+        setTimeout(function () { render(); scheduleMidnight(); }, next - now);
+      }
+      scheduleMidnight();
+    })();
+  </script>
+</body>
+</html>
