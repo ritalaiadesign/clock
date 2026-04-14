@@ -1,2 +1,2 @@
-# clock
-Clock widget for my desktop and Notion aesthetic 
+# desktop-aesthetic
+Aesthetic widgets for my desktop and Notion  
